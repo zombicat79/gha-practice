@@ -1,0 +1,8 @@
+name: Output Event Details
+on: workflow_dispatch
+jobs:
+  extract_info:
+    runs-on: ubuntu-latest
+    steps:
+      - name: extraction
+        run: echo ${{ toJSON(github) }}
