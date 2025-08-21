@@ -1,5 +1,5 @@
 name: Output Event Details
-on: workflow_dispatch
+on: issues
 jobs:
   extract_info:
     runs-on: ubuntu-latest
