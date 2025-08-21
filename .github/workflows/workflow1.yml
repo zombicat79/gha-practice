@@ -1,0 +1,44 @@
+name: Workflow1
+on: push
+jobs:
+  linting:
+    runs-on: ubuntu-latest
+    steps:
+      - name: download repo
+        uses: actions/checkout@v3
+      - name: install node
+        uses: actions/setup-node@v1.4.1
+        with:
+          node-version: "18.18.0"
+      - name: install dependencies
+        run: npm install
+      - name: run linter
+        run: npm run lint
+  testing:
+    needs: linting
+    runs-on: ubuntu-latest
+    steps:
+      - name: download repo
+        uses: actions/checkout@v3
+      - name: install node
+        uses: actions/setup-node@v1.4.1
+        with:
+          node-version: "18.18.0"
+      - name: install dependencies
+        run: npm install
+      - name: run tests
+        run: npm run test
+  building:
+    needs: testing
+    runs-on: ubuntu-latest
+    steps:
+      - name: download repo
+        uses: actions/checkout@v3
+      - name: install node
+        uses: actions/setup-node@v1.4.1
+        with:
+          node-version: "18.18.0"
+      - name: install dependencies
+        run: npm install
+      - name: make build
+        run: npm run build
