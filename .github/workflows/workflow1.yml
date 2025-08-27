@@ -47,3 +47,13 @@ jobs:
         with:
           name: build-output
           path: dist
+  deploying:
+    needs: building
+    runs-on: ubuntu-latest
+    steps:
+      - name: get artifacts
+        uses: actions/download-artifact@1.0.4
+        with:
+          name: build-output
+      - name: check output
+        run: ls
