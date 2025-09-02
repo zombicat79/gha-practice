@@ -10,6 +10,18 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "18.18.0"
+      - name: cache dependencies
+        # Step caching allows us to store some lengthy steps in a general GitHub cache and reuse them...
+        # ...across different jobs and workflows
+        # The most common use case is to cache dependencies so they don't need to be reinstalled every time
+        uses: actions/cache@v3 # Standard GitHub Action from the marketplace
+        with:
+          path: ~/.npm # The path holding the files that are going to be cached
+          key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
+          # The key is something the caching system uses to know when to use cached data or discard it
+          # The 'hashFile' GitHub method creates a hash identifier for the provided file, which varies...
+          # ...every time that file undergoes modification. If hashes do not correspond, the cache...
+          # ...gets discarded
       - name: install dependencies
         run: npm install
       - name: run linter
@@ -24,6 +36,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "18.18.0"
+      # Cache has been initiated during the first job, but needs to be repeated as a step on every...
+      # ...job thereafter, so the current job can decide whether to retrieve the cached data or proceed anew
+      - name: cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
       - name: install dependencies
         run: npm install
       - name: run tests
