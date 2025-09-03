@@ -72,7 +72,7 @@ jobs:
       - name: Publish random value
         # id helps to extract outputs from the relevant step. It can take any value of our choice
         id: publish
-        run: echo 'random-number=46' >> $GITHUB.OUTPUT
+        run: echo 'random-number={46}' >> $GITHUB.OUTPUT ';'
         # To produce an output, an output must be set giving it an identifyer that can the be linked and...
         # ...listed in the 'outputs' property of the job
         # Command to set an output: echo 'script-file={placeholder}' >> GITHUB_OUTPUTS
