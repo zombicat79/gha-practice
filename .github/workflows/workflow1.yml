@@ -50,6 +50,13 @@ jobs:
   building:
     needs: testing
     runs-on: ubuntu-latest
+    outputs:
+    # Here follows a list with all the outputs produced by the job (if applicable)
+      random-number: ${{ steps.publish.outputs.random-number }}
+      # Above there's an output identifyer, so the output can later be used in other jobs...
+      # ...it can take any name
+      # Its value is the special syntax that grants access to environment variables, accessing the relevant...
+      # ...step by its ID and then its 'outputs' property, followed by the output we produced in the step
     steps:
       - name: download repo
         uses: actions/checkout@v3
@@ -61,6 +68,17 @@ jobs:
         run: npm install
       - name: make build
         run: npm run build
+      # Jobs can produce outputs, which are derived values that can later be used in other jobs
+      - name: Publish random value
+        # id helps to extract outputs from the relevant step. It can take any value of our choice
+        id: publish
+        run: echo 'random-number=46' >> $GITHUB.OUTPUT
+        # To produce an output, an output must be set giving it an identifyer that can the be linked and...
+        # ...listed in the 'outputs' property of the job
+        # Command to set an output: echo 'script-file={placeholder}' >> GITHUB_OUTPUTS
+        # Alternative syntax soon to be deprecated: echo '::set-output name=script-file::{placeholder}'
+        # It saves our value to the specified 'outputs' list member
+      # Jobs can produce artifacts (code bundles or in this case the result of the 'npm build' run
       - name: upload artifact
         uses: actions/upload-artifact@v4.6.2
         with:
@@ -76,3 +94,8 @@ jobs:
           name: build-output
       - name: check output
         run: ls
+      # Outputs produced in other jobs can be retrieved and used in current jobs
+      - name: Output random value
+        run: echo "${{ needs.building.outputs.random-number }}"
+        # We use the special syntax that grants access to environment variables, accessing the relevant...
+        # ...job that produced the output we are seeking to reuse
